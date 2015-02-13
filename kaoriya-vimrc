@@ -285,6 +285,10 @@ inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 inoremap <expr><C-y> neocomplete#close_popup()
 inoremap <expr><C-e> neocomplete#cancel_popup()
 
+if executable('D:/local/bin/ctags/ctags')
+    let g:neocomplete#ctags_command = 'D:/local/bin/ctags/ctags'
+endif
+
 ""
 ""  neocomplcache
 ""
@@ -338,6 +342,9 @@ inoremap <expr><C-g> neocomplcache#undo_completion()
 inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr><C-y> neocomplcache#close_popup()
 
+if executable('D:/local/bin/ctags/ctags')
+    let g:neocomplcache_ctags_program = 'D:/local/bin/ctags/ctags'
+endif
 
 ""
 "" vimfiler
