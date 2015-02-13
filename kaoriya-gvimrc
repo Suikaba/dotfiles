@@ -35,9 +35,18 @@ set mouse=a
 set nomousefocus
 set mousehide
 
-if &guioptions =~# 'M'
-  let &guioptions = substitute(&guioptions, '[mT]', '', 'g')
-endif
+set guioptions-=T
+set guioptions-=r
+set guioptions-=R
+set guioptions-=l
+set guioptions-=L
+set guioptions-=t
+set guioptions-=b
+set guioptions-=m
+set guioptions+=M
+set guioptions-=a
+
+set winaltkeys=no
 
 syntax enable
 
