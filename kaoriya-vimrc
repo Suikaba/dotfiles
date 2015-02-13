@@ -160,7 +160,7 @@ call neobundle#begin(expand('~/.vim/bundle/'))
 
 NeoBundleFetch 'Shougo/neobundle.vim'
 
-"" kaoriya vim: plugins/vimproc/autoload/vimproc_win64.dll -> $HOME/.vim/bundle/vimproc.vim/autoload
+"" kaoriya vim: plugins/vimproc/autoload/vimproc_win32[/64].dll -> $HOME/.vim/bundle/vimproc.vim/autoload
 NeoBundle 'Shougo/vimproc', {
   \ 'build' : {
   \     'windows' : 'make -f make_mingw32.mak',
@@ -337,7 +337,7 @@ let g:vimfiler_safe_mode_by_default = 0
 let g:vimfiler_execute_file_list = { 'pdf' : 'open', }
 
 nnoremap <silent> <Leader>fe :<C-u>VimFilerBuffer -quit<CR>
-nnoremap <silent> <Leader>fi :<C-u>VimFilerBufferDir -split -simple -winwidth=35 -no-quit<CR>
+nnoremap <silent> <Leader>fi :<C-u>VimFilerBufferDir -split -simple -winwidth=25 -no-quit<CR>
 
 
 ""
