@@ -30,6 +30,8 @@ set cmdheight=2
 set showcmd
 set title
 
+set display=lastline
+
 set autoread
 
 let mapleader = ","
