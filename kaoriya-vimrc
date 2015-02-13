@@ -1,0 +1,399 @@
+
+if !1 | finish | endif
+
+set fileencoding=utf-8
+set fileencodings=utf-8,cp932,euc-jp
+
+set fileformats=unix,dos,mac
+
+set ignorecase
+set smartcase
+
+set nobackup
+
+set tabstop=4 shiftwidth=4 softtabstop=4
+set expandtab
+set autoindent
+set backspace=indent,eol,start
+set wrapscan
+set showmatch
+set wildmenu
+set formatoptions+=mM
+
+set whichwrap +=h
+set whichwrap +=l
+
+set ruler
+set wrap
+set laststatus=2
+set cmdheight=2
+set showcmd
+set title
+
+set autoread
+
+let mapleader = ","
+
+noremap \ ,
+
+
+if 1 && filereadable($VIM . '/vimrc_local.vim')
+  unlet! g:vimrc_local_finish
+  source $VIM/vimrc_local.vim
+  if exists('g:vimrc_local_finish') && g:vimrc_local_finish != 0
+    finish
+  endif
+endif
+
+if 1 && exists('$HOME') && filereadable($HOME . '/.vimrc_first.vim')
+  unlet! g:vimrc_first_finish
+  source $HOME/.vimrc_first.vim
+  if exists('g:vimrc_first_finish') && g:vimrc_first_finish != 0
+    finish
+  endif
+endif
+
+for s:path in split(glob($VIM.'/plugins/*'), '\n')
+  if s:path !~# '\~$' && isdirectory(s:path)
+    let &runtimepath = &runtimepath.','.s:path
+  end
+endfor
+unlet s:path
+
+source $VIM/plugins/kaoriya/encode_japan.vim
+if !(has('win32') || has('mac')) && has('multi_lang')
+  if !exists('$LANG') || $LANG.'X' ==# 'X'
+    if !exists('$LC_CTYPE') || $LC_CTYPE.'X' ==# 'X'
+      language ctype ja_JP.eucJP
+    endif
+    if !exists('$LC_MESSAGES') || $LC_MESSAGES.'X' ==# 'X'
+      language messages ja_JP.eucJP
+    endif
+  endif
+endif
+if has('mac')
+  set langmenu=japanese
+endif
+if has('keymap')
+endif
+if !has('gui_running') && &encoding != 'cp932' && &term == 'win32'
+  set termencoding=cp932
+endif
+
+if 1 && !filereadable($VIMRUNTIME . '/menu.vim') && has('gui_running')
+  set guioptions+=M
+endif
+
+if 1 && (!exists('g:no_vimrc_example') || g:no_vimrc_example == 0)
+  if &guioptions !~# "M"
+    set guioptions+=M
+    source $VIMRUNTIME/vimrc_example.vim
+    set guioptions-=M
+  else
+    source $VIMRUNTIME/vimrc_example.vim
+  endif
+endif
+
+
+if filereadable($VIM . '/vimrc') && filereadable($VIM . '/ViMrC')
+  " tagsファイルの重複防止
+  set tags=./tags,tags
+endif
+
+if has('unix') && !has('gui_running')
+  let s:uname = system('uname')
+  if s:uname =~? "linux"
+    set term=builtin_linux
+  elseif s:uname =~? "freebsd"
+    set term=builtin_cons25
+  elseif s:uname =~? "Darwin"
+    set term=beos-ansi
+  else
+    set term=builtin_xterm
+  endif
+  unlet s:uname
+endif
+
+if !has('gui_running') && has('xterm_clipboard')
+  set clipboard=exclude:cons\\\|linux\\\|cygwin\\\|rxvt\\\|screen
+endif
+
+if has('win32') && $PATH !~? '\(^\|;\)' . escape($VIM, '\\') . '\(;\|$\)'
+  let $PATH = $VIM . ';' . $PATH
+endif
+
+if has('mac')
+  set iskeyword=@,48-57,_,128-167,224-235
+endif
+
+set formatexpr=autofmt#japanese#formatexpr()
+
+if kaoriya#switch#enabled('disable-vimdoc-ja')
+  let &rtp = join(filter(split(&rtp, ','), 'v:val !~ "vimdoc-ja"'), ',')
+endif
+
+
+""
+"" plugins
+""
+if !isdirectory(expand('~/.vim/bundle'))
+    echon "Installing neobundle.vim"
+    silent call mkdir(expand('~/.vim/bundle'), 'p')
+    if has('win32') || has('win64')
+        silent exec "!git clone https://github.com/Shougo/neobundle.vim ".$HOME."/.vim/bundle/neobundle.vim"
+    else
+        silent !git clone https://github.com/Shougo/neobundle.vim $HOME/.vim/bundle/neobundle.vim'
+    endif
+    echo "done."
+    if v:shell_error
+        echoerr "neobundle.vim installation has failed."
+        finish
+    endif
+endif
+
+if has('vim_starting')
+    set nocompatible
+    set runtimepath+=~/.vim/bundle/neobundle.vim/
+endif
+
+call neobundle#begin(expand('~/.vim/bundle/'))
+
+NeoBundleFetch 'Shougo/neobundle.vim'
+
+"" kaoriya vim: plugins/vimproc/autoload/vimproc_win64.dll -> $HOME/.vim/bundle/vimproc.vim/autoload
+NeoBundle 'Shougo/vimproc', {
+  \ 'build' : {
+  \     'windows' : 'make -f make_mingw32.mak',
+  \     'cygwin' : 'make -f make_cygwin.mak',
+  \     'mac' : 'make -f make_mac.mak',
+  \     'unix' : 'make -f make_unix.mak',
+  \    },
+  \ }
+NeoBundle 'Shougo/vimshell'
+NeoBundle 'Shougo/unite.vim'
+NeoBundle 'Shougo/neocomplete'
+NeoBundle 'Shougo/neosnippet'
+NeoBundle 'Shougo/neosnippet-snippets'
+NeoBundle 'Shougo/vimfiler'
+NeoBundle 'Shougo/neomru'
+NeoBundle 'altercation/vim-colors-solarized'
+NeoBundle 'vim-jp/cpp-vim'
+NeoBundle 'kana/vim-smartinput'
+"NeoBundle 'git://git.code.sf.net/p/vim-latex/vim-latex'
+NeoBundle 'itchyny/lightline.vim'
+NeoBundle 'w0ng/vim-hybrid'
+NeoBundle 'cocopon/lightline-hybrid.vim'
+
+call neobundle#end()
+
+filetype plugin indent on
+filetype indent on
+syntax on
+syntax enable
+
+NeoBundleCheck
+
+""
+""
+""
+noremap j gj
+noremap k gk
+
+""
+"" lightline-hybrid
+""
+let g:lightline = {}
+let g:lightline.colorscheme = 'hybrid'
+
+
+""
+"" include path
+""
+augroup cpp-path
+    autocmd!
+    autocmd FileType cpp setlocal path=.,"C:/MinGW/mingw32/lib/gcc/mingw32/4.8.1/include/c++"
+augroup END
+
+
+""
+"" unite
+""
+let g:unite_enable_start_insert=0
+noremap <C-P> :Unite buffer<CR>
+noremap <C-N> :Unite -buffer-name=file file<CR>
+noremap <C-Z> :Unite file_mru<CR>
+
+nnoremap <silent> <C-f> :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
+inoremap <silent> <C-f> <ESC>:<C-u>UniteWithBufferDir -buffer-name=files file<CR>
+nnoremap <silent> <C-b> :<C-u>Unite buffer file_mru<CR>
+inoremap <silent> <C-b> <ESC>:<C-u>Unite buffer file_mru<CR>
+
+au FileType unite nnoremap <silent> <buffer> <expr> <C-J> unite#do_action('split')
+au FileType unite inoremap <silent> <buffer> <expr> <C-J> unite#do_action('split')
+au FileType unite nnoremap <silent> <buffer> <expr> <C-K> unite#do_action('vsplit')
+au FileType unite inoremap <silent> <buffer> <expr> <C-K> unite#do_action('vsplit')
+au FileType unite nnoremap <silent> <buffer> <ESC><ESC> :q<CR>
+au FileType unite inoremap <silent> <buffer> <ESC><ESC> <ESC>:q<CR>
+
+
+""
+"" neocomplete
+""
+let g:neocomplete#enable_at_startup = 1
+let g:neocomplete#enable_ignore_case = 1
+let g:neocomplete#enable_smart_case = 1
+let g:neocomplete#sources#syntax#min_keyword_length = 3
+let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+if !exists('g:neocomplete#keyword_patterns')
+    let g:neocomplete#keyword_patterns = {}
+endif
+let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+
+if !exists('g:neocomplete#sources#omni#input_patterns')
+    let g:neocomplete#sources#omni#input_patterns = {}
+endif
+let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\w*\|\h\w*::\w*'
+let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+
+inoremap <expr><C-g> neocomplete#undo_completion()
+inoremap <expr><C-l> neocomplete#complete_common_string()
+inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><C-y> neocomplete#close_popup()
+inoremap <expr><C-e> neocomplete#cancel_popup()
+
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+
+""
+""  neocomplcache
+""
+" let g:acp_enableAtStartup = 0
+" let g:neocomplcache_enable_at_startup = 1
+" let g:neocomplcache_enable_smart_case = 1
+" let g:neocomplcache_min_syntax_length = 3
+" let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+
+" let g:neocomplcache_dictionary_filetype_lists = {
+"     \ 'default' : '',
+"     \ 'vimshell' : $HOME.'/.vimshell_hist',
+"     \ 'scheme' : $HOME.'/.gosh_completions'
+"         \ }
+
+" if !exists('g:neocomplcache_keyword_patterns')
+"     let g:neocomplcache_keyword_patterns = {}
+" endif
+" let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
+
+" inoremap <expr><C-g>     neocomplcache#undo_completion()
+" inoremap <expr><C-l>     neocomplcache#complete_common_string()
+
+" inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+" function! s:my_cr_function()
+"   return neocomplcache#smart_close_popup() . "\<CR>"
+" endfunction
+
+" inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+" inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+" inoremap <expr><C-y>  neocomplcache#close_popup()
+" inoremap <expr><C-e>  neocomplcache#cancel_popup()
+
+" autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+" autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+" autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+" autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+" autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+" if !exists('g:neocomplcache_omni_patterns')
+"   let g:neocomplcache_omni_patterns = {}
+" endif
+" let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
+" let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+" let g:neocomplcache_omni_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+" let g:neocomplcache_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+
+" let g:neocomplcache_omni_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+
+" if !exists("g:neocomplcache_include_paths")
+"   let g:neocomplcache_include_paths={}
+" endif
+
+" let g:neocomplcache_include_paths.cc="C:/Qt/Qt5.0.2/Tools/MinGW/lib/gcc/i686-w64-mingw32/4.7.2/include/c++,D:/lib/boost_1_54_0"
+" let g:neocomplcache_include_paths.cpp="C:/Qt/Qt5.0.2/Tools/MinGW/lib/gcc/i686-w64-mingw32/4.7.2/include/c++,D:/lib/boost_1_54_0"
+
+
+""
+"" vimfiler
+""
+let g:vimfiler_as_default_explorer = 1
+let g:vimfiler_safe_mode_by_default = 0
+let g:vimfiler_execute_file_list = { 'pdf' : 'open', }
+
+nnoremap <silent> <Leader>fe :<C-u>VimFilerBuffer -quit<CR>
+nnoremap <silent> <Leader>fi :<C-u>VimFilerBufferDir -split -simple -winwidth=35 -no-quit<CR>
+
+
+""
+"" smartinput
+""
+call smartinput#map_to_trigger('i', '<BS>', '<BS>', '<BS>')
+call smartinput#define_rule({
+    \ 'at'    : '(\%#)',
+    \ 'char'  : '<BS>',
+    \ 'input' : '<Del><BS>',
+    \ })
+
+call smartinput#define_rule({
+    \ 'at'    : '{\%#}',
+    \ 'char'  : '<BS>',
+    \ 'input' : '<Del><BS>',
+    \ })
+
+call smartinput#define_rule({
+    \ 'at'    : '\[\%#\]',
+    \ 'char'  : '<BS>',
+    \ 'input' : '<Del><BS>',
+    \ })
+
+call smartinput#define_rule({
+    \ 'at'       : '<\%#>',
+    \ 'char'     : '<BS>',
+    \ 'input'    : '<Del><BS>',
+    \ 'filetype' : ['cpp'],
+    \ })
+
+call smartinput#map_to_trigger('i', '*', '*', '*')
+call smartinput#define_rule({
+    \ 'at'       : '\/\%#',
+    \ 'char'     : '*',
+    \ 'input'    : '**/<Left><Left>',
+    \ 'filetype' : ['c', 'cpp'],
+    \ })
+
+call smartinput#define_rule({
+    \ 'at'       : '\%(\<struct\>\|\<class\>\|\<enum\>\)\s*\w\+.*\%#',
+    \ 'char'     : '{',
+    \ 'input'    : '{};<Left><Left>',
+    \ 'filetype' : ['cpp'],
+    \ })
+
+call smartinput#define_rule({
+    \ 'at'       : '\<template\>\s*\%#',
+    \ 'char'     : '<',
+    \ 'input'    : '<><Left>',
+    \ 'filetype' : ['cpp']
+    \ })
+
+
+""
+"" vim-latex
+""
+let g:tex_flavor='latex'
+
