@@ -34,6 +34,8 @@ set autoread
 
 let mapleader = ","
 
+nnoremap Y y$
+
 noremap \ ,
 
 
