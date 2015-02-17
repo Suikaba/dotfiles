@@ -30,17 +30,16 @@ set cmdheight=2
 set showcmd
 set title
 
-set display=lastline
-
+set display=lastline 
 set pumheight=10
 
 set autoread
 
-let mapleader = ","
-
-nnoremap Y y$
+let g:mapleader = ","
 
 noremap \ ,
+
+nnoremap Y y$
 
 
 if 1 && filereadable($VIM . '/vimrc_local.vim')
@@ -204,6 +203,7 @@ NeoBundleCheck
 ""
 noremap j gj
 noremap k gk
+
 
 ""
 "" lightline-hybrid
@@ -420,6 +420,12 @@ call smartinput#define_rule({
     \ 'filetype' : ['cpp'],
     \ })
 
+""
+"" VimShell
+""
+nnoremap <silent><Leader>vs :<C-u>VimShell -split-command=vsplit<CR>
+nnoremap <silent><Leader>vc :<C-u>VimShellSendString<Space>
+let g:vimshell_user_prompt = 'getcwd()'
 
 ""
 "" vim-latex
