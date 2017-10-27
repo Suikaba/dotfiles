@@ -42,48 +42,69 @@ noremap \ ,
 nnoremap Y y$
 
 
-""
-"" plugins
-""
-if has('vim_starting')
-    set runtimepath+=~/.vim/bundle/neobundle.vim/
+"dein Scripts-----------------------------
+if &compatible
+  set nocompatible               " Be iMproved
 endif
 
-call neobundle#begin(expand('~/.vim/bundle/'))
+" Required:
+set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
 
-NeoBundleFetch 'Shougo/neobundle.vim'
+" Required:
+if dein#load_state('~/.cache/dein')
+  call dein#begin(expand('~/.cache/dein'))
 
-"" kaoriya vim: plugins/vimproc/autoload/vimproc_win64.dll -> $HOME/.vim/bundle/vimproc.vim/autoload
-NeoBundle 'Shougo/vimproc', {
-  \ 'build' : {
-  \     'windows' : 'make -f make_mingw64.mak',
-  \     'cygwin' : 'make -f make_cygwin.mak',
-  \     'mac' : 'make -f make_mac.mak',
-  \     'unix' : 'make -f make_unix.mak',
-  \    },
-  \ }
-NeoBundle 'Shougo/vimshell'
-NeoBundle 'Shougo/unite.vim'
-NeoBundle 'Shougo/neosnippet'
-NeoBundle 'Shougo/neosnippet-snippets'
-NeoBundle 'Shougo/vimfiler'
-NeoBundle 'Shougo/neomru'
-NeoBundle 'altercation/vim-colors-solarized'
-NeoBundle 'vim-jp/cpp-vim'
-NeoBundle 'kana/vim-smartinput'
-"NeoBundle 'git://git.code.sf.net/p/vim-latex/vim-latex'
-NeoBundle 'itchyny/lightline.vim'
-NeoBundle 'w0ng/vim-hybrid'
-NeoBundle 'cocopon/lightline-hybrid.vim'
+  " Let dein manage dein
+  " Required:
+  call dein#add('~/.cache/dein/repos/github.com/Shougo/dein.vim')
 
-call neobundle#end()
+  " Add or remove your plugins here:
+  call dein#add('Shougo/unite.vim')
+  call dein#add('Shougo/neocomplete.vim')
+  call dein#add('Shougo/neosnippet')
+  call dein#add('Shougo/neosnippet-snippets')
+  call dein#add('Shougo/vimfiler.vim')
+  call dein#add('Shougo/neomru.vim')
+  call dein#add('Shougo/vimproc.vim', {'build': 'make'})
+
+  call dein#add('altercation/vim-colors-solarized')
+  call dein#add('vim-jp/cpp-vim')
+  call dein#add('kana/vim-smartinput')
+  call dein#add('itchyny/lightline.vim')
+  call dein#add('w0ng/vim-hybrid')
+  call dein#add('cocopon/lightline-hybrid.vim')
+  call dein#add('tpope/vim-surround')
+  call dein#add('rust-lang/rust.vim')
+  call dein#add('racer-rust/vim-racer')
+  call dein#add('lervag/vimtex')
+  call dein#add('thinca/vim-quickrun')
+
+  " You can specify revision/branch/tag.
+  call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
+
+  " Required:
+  call dein#end()
+  call dein#save_state()
+endif
+
+" Required:
+filetype plugin indent on
+syntax enable
+
+" If you want to install not installed plugins on startup.
+if dein#check_install()
+  call dein#install()
+endif
+
+"End dein Scripts-------------------------
+
+
 
 filetype plugin indent on
 filetype indent on
 syntax on
 syntax enable
 
-NeoBundleCheck
 
 ""
 ""
@@ -95,10 +116,10 @@ noremap k gk
 ""
 "" include path
 ""
-augroup cpp-path
-    autocmd!
-    autocmd FileType cpp setlocal path=.,"C:/MinGW/mingw32/lib/gcc/mingw32/4.8.1/include/c++"
-augroup END
+"augroup cpp-path
+"    autocmd!
+"    autocmd FileType cpp setlocal path=.,"C:/MinGW/mingw32/lib/gcc/mingw32/4.8.1/include/c++"
+"augroup END
 
 
 ""
@@ -190,15 +211,20 @@ call smartinput#define_rule({
     \ 'filetype' : ['cpp'],
     \ })
 
+set background=dark
+let g:hybrid_use_Xresources = 1
+colorscheme hybrid
+set t_Co=256
+
 ""
 "" VimShell
 ""
-nnoremap <silent><Leader>vs :<C-u>VimShell -split-command=vsplit<CR>
-nnoremap <silent><Leader>vc :<C-u>VimShellSendString<Space>
-let g:vimshell_user_prompt = 'getcwd()'
+"nnoremap <silent><Leader>vs :<C-u>VimShell -split-command=vsplit<CR>
+"nnoremap <silent><Leader>vc :<C-u>VimShellSendString<Space>
+"let g:vimshell_user_prompt = 'getcwd()'
 
 ""
 "" vim-latex
 ""
-let g:tex_flavor='latex'
-
+"let g:tex_flavor='latex'
+let g:vimtex_enabled=0
