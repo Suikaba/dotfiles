@@ -120,6 +120,11 @@ return {
         --     require("nvim-surround").setup {}
         -- end
     },
+    {
+        'mrcjkb/rustaceanvim',
+        version = '^5', -- Recommended
+        lazy = false, -- This plugin is already lazy
+    }
     -- Use coc-pairs if using coc.nvim.
     -- {
     --     'windwp/nvim-autopairs',
