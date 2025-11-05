@@ -10,6 +10,8 @@ return {
     },
     {
         'nvim-treesitter/nvim-treesitter',
+        branch = 'master',
+        lazy = false,
         event ={'BufNewFile', 'BufRead'},
         build = ":TSUpdate",
         config = function()
@@ -93,23 +95,6 @@ return {
         end
     },
     {
-        -- Require nodejs and npm
-        'neoclide/coc.nvim',
-        branch = "release",
-        config = function()
-            vim.g.coc_global_extensions = {
-                --"coc-clangd",
-                --"coc-rust-analyzer",
-                --"coc-python",
-                --"coc-snippets",
-                "coc-vimtex",
-                "coc-json",
-                "coc-sh",
-                "coc-pairs",
-            }
-        end
-    },
-    {
         'lervag/vimtex',
     },
     {
@@ -125,10 +110,4 @@ return {
         version = '^5', -- Recommended
         lazy = false, -- This plugin is already lazy
     }
-    -- Use coc-pairs if using coc.nvim.
-    -- {
-    --     'windwp/nvim-autopairs',
-    --     event = "InsertEnter",
-    --     opts = {}
-    -- },
 }
