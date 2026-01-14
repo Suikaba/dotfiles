@@ -21,6 +21,17 @@ vim.api.nvim_create_autocmd("LspAttach", {
         { buffer = buf, desc = "Show hover documentation" })
     end
 
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      pattern = { "*.rs", "*.py", "*.cpp", "*.c", "*.h", "*.hpp" },
+      callback = function()
+        vim.lsp.buf.format({
+          buffer = args.buf,
+          async = false,
+          id = args.data.client_id
+        })
+      end
+    })
+
     -- if client:supports_method("textDocument/completion") then
     --   -- Use CTRL-space to trigger LSP completion manually.
     --   vim.keymap.set('i', '<C-Space>', function()
